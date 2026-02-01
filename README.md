@@ -1,5 +1,16 @@
-# Vue 3 + Vite
+# 🎬 QR Code Video Streaming Client
 
-This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+This is the **Vue 3 + Vite** frontend for the QR Code Video Streaming system.  
+It allows users to scan QR codes, open videos, and stream content securely.
 
-Learn more about IDE Support for Vue in the [Vue Docs Scaling up Guide](https://vuejs.org/guide/scaling-up/tooling.html#ide-support).
+Built with modern Vue features and optimized for performance.
+
+---
+
+### 🔐 Environment Variables (.env)
+
+Create a file named .env in the root directory of the project with:
+
+```env
+VITE_API_URL=http://localhost:3001
+```

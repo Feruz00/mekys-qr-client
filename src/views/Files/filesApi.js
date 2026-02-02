@@ -1,27 +1,30 @@
 import axios from 'axios';
 const server = `${import.meta.env.VITE_API_URL}/api`;
 
-const createFile = async (data, onProgress) => {
+const createFile = async (data, onProgress, signal) => {
   try {
     const res = await axios.post(`${server}/upload`, data, {
       withCredentials: true,
-      onUploadProgress: (progressEvent) => {
-        if (!progressEvent.total) return;
-
-        const percent = Math.round(
-          (progressEvent.loaded * 100) / progressEvent.total
-        );
-
+      signal, // 🔥 cancel support
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+      onUploadProgress: (e) => {
+        if (!e.total) return;
+        const percent = Math.round((e.loaded * 100) / e.total);
         onProgress?.(percent);
       },
     });
 
     return res.data;
   } catch (err) {
-    // 🎯 centralized error handling
+    if (axios.isCancel(err) || err.name === 'CanceledError') {
+      throw new Error('Upload cancelled');
+    }
+
     const message =
       err.response?.data?.message ||
-      err.response?.data?.error || // fallback (old backend)
+      err.response?.data?.error ||
       'Serwerde näsazlyk bar';
 
     throw new Error(message);

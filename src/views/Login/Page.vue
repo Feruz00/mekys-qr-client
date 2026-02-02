@@ -1,18 +1,26 @@
 <template>
   <div
-    class="min-h-screen w-full flex items-center justify-center bg-gray-50 px-4"
+    class="min-h-screen w-full flex items-center justify-center bg-gray-50 px-3 sm:px-6"
   >
-    <div class="w-full max-w-md">
+    <div class="w-full max-w-sm sm:max-w-md">
       <!-- Card -->
       <a-card
         class="rounded-2xl shadow-2xl border-0"
-        :body-style="{ padding: '32px' }"
+        :body-style="{
+          padding: isMobile ? '20px' : '32px',
+        }"
       >
-        <div class="text-center mb-8">
-          <h1 class="text-3xl font-bold text-gray-800">Welcome Back</h1>
-          <p class="text-gray-500 mt-2">Sign in to your account</p>
+        <!-- Header -->
+        <div class="text-center mb-6 sm:mb-8">
+          <h1 class="text-2xl sm:text-3xl font-bold text-gray-800">
+            Welcome Back
+          </h1>
+          <p class="text-gray-500 mt-2 text-sm sm:text-base">
+            Sign in to your account
+          </p>
         </div>
 
+        <!-- Form -->
         <a-form
           layout="vertical"
           @finish="handleSubmit"
@@ -49,14 +57,15 @@
               html-type="submit"
               size="large"
               block
-              class="h-11 rounded-lg font-semibold"
+              class="h-11 sm:h-12 rounded-lg font-semibold"
             >
               Sign In
             </a-button>
           </a-form-item>
         </a-form>
 
-        <div class="text-center mt-6 text-sm text-gray-500">
+        <!-- Footer -->
+        <div class="text-center mt-5 sm:mt-6 text-xs sm:text-sm text-gray-500">
           © {{ new Date().getFullYear() }} Your App
         </div>
       </a-card>
@@ -67,7 +76,7 @@
 <script setup>
 import { useRouter } from 'vue-router';
 import { useLogin } from './useLogin';
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 
 const { signin, isLoading } = useLogin();
 
@@ -94,6 +103,7 @@ const rules = {
 };
 
 const router = useRouter();
+
 const handleSubmit = () => {
   signin(form.value, {
     onSuccess: ({ data }) => {
@@ -106,6 +116,10 @@ const handleSubmit = () => {
     },
   });
 };
+
+// simple responsive helper
+const isMobile = computed(() => window.innerWidth < 640);
+
 onMounted(() => {
   document.title = 'Qr Code | Login';
 });

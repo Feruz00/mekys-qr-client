@@ -1,31 +1,50 @@
 <template>
   <div
-    class="bg-white py-2 px-3 rounded shadow flex flex-row items-center justify-between"
+    class="bg-white rounded shadow px-3 py-2 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:text-sm md:text-base"
   >
-    <div class="flex gap-5 items-center">
+    <!-- LEFT: title -->
+    <div class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-5">
       <slot />
-      <div>
+
+      <div class="font-medium leading-tight">
         {{ pageName }}
-        <span v-if="isSuccess">(Jemi {{ filteredTagsCount }} sany)</span>
+        <span
+          v-if="isSuccess"
+          class="block sm:inline text-gray-500 text-xs sm:text-sm"
+        >
+          (Jemi {{ filteredTagsCount }} sany)
+        </span>
       </div>
     </div>
 
-    <div class="flex items-center gap-2">
+    <!-- RIGHT: actions -->
+    <div class="flex flex-col gap-2 sm:flex-row sm:items-center">
       <a-button
         v-if="selectedRows.length"
         danger
         type="primary"
+        size="small"
         :loading="isDeleteSources"
         :disabled="isDeleteSources"
         @click.prevent="$emit('delete')"
+        class="w-full sm:w-auto"
       >
-        Delete ({{ selectedRows.length }} selected)
+        Delete ({{ selectedRows.length }})
       </a-button>
 
       <router-link :to="{ name: btnHref }" v-if="btn">
-        <a-button type="primary">{{ btnName }}</a-button>
+        <a-button type="primary" size="small" class="w-full sm:w-auto">
+          {{ btnName }}
+        </a-button>
       </router-link>
-      <a-button :loading="loading" :disabled="loading" @click="signout">
+
+      <a-button
+        size="small"
+        :loading="isLoading"
+        :disabled="isLoading"
+        class="w-full sm:w-auto"
+        @click="signout"
+      >
         Ulgamdan çykmak
       </a-button>
     </div>

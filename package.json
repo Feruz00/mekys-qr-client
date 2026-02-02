@@ -12,6 +12,7 @@
     "@tailwindcss/vite": "^4.1.18",
     "@tanstack/vue-query": "^5.92.9",
     "@tanstack/vue-query-devtools": "^6.1.4",
+    "@vueuse/core": "^14.2.0",
     "ant-design-vue": "^4.2.6",
     "axios": "^1.13.4",
     "nprogress": "^0.2.0",

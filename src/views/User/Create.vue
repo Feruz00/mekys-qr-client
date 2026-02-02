@@ -144,19 +144,21 @@ const customUpload = async (options) => {
 
   try {
     removeImage();
-    const data = await createFile(formData, (d) => {
-      uploadProgress.value = d;
+    const res = await createFile(formData, (percent) => {
+      uploadProgress.value.percent = percent;
+
+      onProgress({ percent });
     });
 
     setTimeout(() => {
       uploadProgress.value = 0;
     }, 500);
 
-    form.value.fileId = data.id;
+    form.value.fileId = res.id;
 
-    form.value.file = data;
+    form.value.file = res;
 
-    options.onSuccess(data);
+    options.onSuccess(res);
   } catch (error) {
     uploadProgress.value = 0;
 

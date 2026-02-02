@@ -34,7 +34,7 @@ const videoId = computed(() => route.params.id);
 
 // 🔥 CHANGE this if backend path differs
 const videoUrl = computed(() => {
-  return `${import.meta.env.VITE_API_URL}/video/${videoId.value}`;
+  return `${import.meta.env.VITE_API_URL}/api/video/${videoId.value}`;
 });
 
 onMounted(() => {

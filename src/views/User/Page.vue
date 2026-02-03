@@ -112,7 +112,6 @@
         color="#000000"
         bgColor="#ffffff"
       />
-
       <a-button type="primary" @click="downloadQr"> Download QR </a-button>
     </div>
   </a-modal>

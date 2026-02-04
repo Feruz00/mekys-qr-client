@@ -74,11 +74,17 @@
             type="primary"
             html-type="submit"
             class="h-11 font-semibold"
+            :disabled="uploadProgress.percent || isPending"
+            :loading="isPending"
           >
             Goşmak
           </a-button>
 
-          <a-button class="ml-4 h-11 font-semibold" @click="$router.go(-1)">
+          <a-button
+            class="ml-4 h-11 font-semibold"
+            @click="$router.go(-1)"
+            :disabled="uploadProgress.percent || isPending"
+          >
             Ýatyrmak
           </a-button>
         </a-form-item>

@@ -23,7 +23,7 @@
           <div class="flex flex-col gap-2">
             <div class="flex gap-5 items-center">
               <a-upload
-                accept=".mp4,.webm,.avi,.mkv"
+                :accept="allowedExtensionsString"
                 :before-upload="beforeUpload"
                 :show-upload-list="false"
                 :customRequest="customUpload"
@@ -36,7 +36,7 @@
 
               <span class="text-gray-500">
                 Degişli formatlar:
-                {{ ['.mp4', '.webm', '.avi', '.mkv'].join(', ') }}
+                {{ allowedExtensionsString }}
               </span>
             </div>
 
@@ -49,7 +49,13 @@
           <!-- PREVIEW -->
           <div v-if="form.fileId" class="relative group mt-3 w-full">
             <div class="w-1/2 rounded-md overflow-hidden">
-              <VideoPlayer :path="getStreamUrl(form.fileId)" />
+              <VideoPlayer v-if="isVideo" :path="getStreamUrl(form.fileId)" />
+              <audio v-else controls class="w-full">
+                <source
+                  :src="getStreamUrl(form.fileId)"
+                  :type="form.file?.mimetype"
+                />
+              </audio>
             </div>
 
             <div
@@ -82,7 +88,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount } from 'vue';
+import { ref, onMounted, onBeforeUnmount, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { notification } from 'ant-design-vue';
 import { UploadOutlined, CloseOutlined } from '@ant-design/icons-vue';
@@ -103,10 +109,24 @@ const form = ref({
   fileId: null,
   file: null,
 });
+const allowedExtensions = [
+  // video
+  '.mp4',
+  '.webm',
+  '.avi',
+  '.mkv',
+
+  // audio
+  '.mp3',
+  '.wav',
+  '.ogg',
+  '.aac',
+  '.m4a',
+];
+const allowedExtensionsString = allowedExtensions.join(',');
 
 let uploadController = null;
 
-/* VALIDATION */
 const rules = {
   file: [
     {
@@ -122,16 +142,21 @@ const rules = {
 
 /* FILE TYPE CHECK */
 const beforeUpload = (file) => {
-  const isVideo = file.type.startsWith('video/');
-  if (!isVideo) {
+  const ext = '.' + file.name.split('.').pop().toLowerCase();
+
+  const isAllowed = allowedExtensions.includes(ext);
+
+  if (!isAllowed) {
     notification.error({
-      message: 'Diňe wideo faýllar rugsat berilýär',
+      message: 'Diňe audio ýa-da wideo faýllar rugsat berilýär',
+      description: allowedExtensions.join(', '),
     });
   }
-  return isVideo;
-};
 
-/* CANCEL UPLOAD */
+  return isAllowed;
+};
+const isVideo = computed(() => form.value?.file?.mimetype?.startsWith('video'));
+
 const cancelUpload = () => {
   if (uploadController) {
     uploadController.abort();

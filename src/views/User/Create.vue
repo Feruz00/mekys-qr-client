@@ -49,7 +49,10 @@
           <!-- PREVIEW -->
           <div v-if="form.fileId" class="relative group mt-3 w-full">
             <div class="w-1/2 rounded-md overflow-hidden">
-              <VideoPlayer v-if="isVideo" :path="getStreamUrl(form.fileId)" />
+              <VideoPlayer
+                v-if="form.file?.mimetype?.startsWith('video')"
+                :path="getStreamUrl(form.fileId)"
+              />
               <audio v-else controls class="w-full">
                 <source
                   :src="getStreamUrl(form.fileId)"
@@ -215,7 +218,7 @@ const customUpload = async ({ file, onProgress, onSuccess, onError }) => {
 
     setTimeout(() => {
       uploadProgress.value.percent = 0;
-    }, 1000);
+    }, 200);
 
     onSuccess(data);
   } catch (err) {

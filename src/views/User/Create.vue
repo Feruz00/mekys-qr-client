@@ -35,11 +35,6 @@
                   Ýükle
                 </a-button>
               </a-upload>
-
-              <span class="text-gray-500 text-sm">
-                Degişli formatlar:
-                {{ allowedExtensionsString }}
-              </span>
             </div>
 
             <!-- PROGRESS -->

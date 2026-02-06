@@ -58,6 +58,7 @@
               size="large"
               block
               class="h-11 sm:h-12 rounded-lg font-semibold"
+              :loading="isLoading"
             >
               Sign In
             </a-button>
@@ -117,7 +118,6 @@ const handleSubmit = () => {
   });
 };
 
-// simple responsive helper
 const isMobile = computed(() => window.innerWidth < 640);
 
 onMounted(() => {

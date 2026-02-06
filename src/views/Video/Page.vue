@@ -16,10 +16,11 @@
       <!-- VIDEO -->
       <video
         v-else-if="isVideo"
-        class="w-full rounded-lg shadow-lg"
-        controls
+        muted
         autoplay
         playsinline
+        controls
+        class="w-full rounded-lg shadow-lg"
         @error="handleStreamError"
       >
         <source :src="mediaUrl" :type="mimeType" />

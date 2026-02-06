@@ -1,5 +1,5 @@
 <template>
-  <div class="px-20 py-5">
+  <div class="px-4 sm:px-6 lg:px-10 py-5 max-w-6xl mx-auto">
     <TopBar
       name="Täze media goşmak"
       :routes="[
@@ -8,11 +8,10 @@
       ]"
     />
 
-    <div class="bg-white py-4 px-6 rounded-lg shadow-md mt-3">
+    <div class="bg-white py-5 px-4 sm:px-6 rounded-xl shadow-md mt-4">
       <a-form
         :model="form"
-        :label-col="{ span: 4 }"
-        :wrapper-col="{ span: 24 }"
+        layout="vertical"
         autocomplete="off"
         :rules="rules"
         :loading="isPending"
@@ -20,39 +19,40 @@
       >
         <!-- FILE UPLOAD -->
         <a-form-item label="Degişli media" name="file">
-          <div class="flex flex-col gap-2">
-            <div class="flex gap-5 items-center">
+          <div class="flex flex-col gap-4">
+            <!-- Upload Row -->
+            <div
+              class="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6"
+            >
               <a-upload
                 :accept="allowedExtensionsString"
                 :before-upload="beforeUpload"
                 :show-upload-list="false"
                 :customRequest="customUpload"
               >
-                <a-button>
+                <a-button size="large">
                   <UploadOutlined />
                   Ýükle
                 </a-button>
               </a-upload>
 
-              <span class="text-gray-500">
+              <span class="text-gray-500 text-sm">
                 Degişli formatlar:
                 {{ allowedExtensionsString }}
               </span>
             </div>
 
             <!-- PROGRESS -->
-            <div v-if="uploadProgress.percent > 0" class="w-1/2 mt-2">
+            <div v-if="uploadProgress.percent > 0" class="w-full sm:w-2/3">
               <a-progress :percent="uploadProgress.percent" />
             </div>
           </div>
 
           <!-- PREVIEW -->
-          <div v-if="form.fileId" class="relative group mt-3 w-full">
-            <div class="w-1/2 rounded-md overflow-hidden">
-              <VideoPlayer
-                v-if="form.file?.mimetype?.startsWith('video')"
-                :path="getStreamUrl(form.fileId)"
-              />
+          <div v-if="form.fileId" class="relative group mt-5 w-full max-w-2xl">
+            <div class="rounded-lg overflow-hidden border">
+              <VideoPlayer v-if="isVideo" :path="getStreamUrl(form.fileId)" />
+
               <audio v-else controls class="w-full">
                 <source
                   :src="getStreamUrl(form.fileId)"
@@ -61,6 +61,7 @@
               </audio>
             </div>
 
+            <!-- Delete Button -->
             <div
               class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition"
             >
@@ -72,30 +73,33 @@
         </a-form-item>
 
         <!-- ACTIONS -->
-        <a-form-item :wrapper-col="{ offset: 3, span: 24 }">
-          <a-button
-            type="primary"
-            html-type="submit"
-            class="h-11 font-semibold"
-            :disabled="uploadProgress.percent || isPending"
-            :loading="isPending"
-          >
-            Goşmak
-          </a-button>
+        <a-form-item>
+          <div class="flex flex-col sm:flex-row gap-3 sm:gap-4">
+            <a-button
+              type="primary"
+              html-type="submit"
+              size="large"
+              class="font-semibold w-full sm:w-auto"
+              :disabled="uploadProgress.percent || isPending"
+              :loading="isPending"
+            >
+              Goşmak
+            </a-button>
 
-          <a-button
-            class="ml-4 h-11 font-semibold"
-            @click="$router.go(-1)"
-            :disabled="uploadProgress.percent || isPending"
-          >
-            Ýatyrmak
-          </a-button>
+            <a-button
+              size="large"
+              class="font-semibold w-full sm:w-auto"
+              @click="$router.go(-1)"
+              :disabled="uploadProgress.percent || isPending"
+            >
+              Ýatyrmak
+            </a-button>
+          </div>
         </a-form-item>
       </a-form>
     </div>
   </div>
 </template>
-
 <script setup>
 import { ref, onMounted, onBeforeUnmount, computed } from 'vue';
 import { useRouter } from 'vue-router';

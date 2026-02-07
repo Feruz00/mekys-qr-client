@@ -148,20 +148,18 @@ const rules = {
   ],
 };
 
-/* FILE TYPE CHECK */
 const beforeUpload = (file) => {
-  const ext = '.' + file.name.split('.').pop().toLowerCase();
+  const isVideoOrAudio =
+    file.type.startsWith('video/') || file.type.startsWith('audio/');
 
-  const isAllowed = allowedExtensions.includes(ext);
-
-  if (!isAllowed) {
+  if (!isVideoOrAudio) {
     notification.error({
       message: 'Diňe audio ýa-da wideo faýllar rugsat berilýär',
-      description: allowedExtensions.join(', '),
+      description: 'Diňe video/* ýa-da audio/* formatlary ýükläp bolýar.',
     });
   }
 
-  return isAllowed;
+  return isVideoOrAudio;
 };
 const isVideo = computed(() => form.value?.file?.mimetype?.startsWith('video'));
 

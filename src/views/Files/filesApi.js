@@ -5,7 +5,7 @@ const createFile = async (data, onProgress, signal) => {
   try {
     const res = await axios.post(`${server}/upload`, data, {
       withCredentials: true,
-      signal, // 🔥 cancel support
+      signal,
       headers: {
         'Content-Type': 'multipart/form-data',
       },

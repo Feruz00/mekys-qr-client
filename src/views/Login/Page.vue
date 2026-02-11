@@ -13,11 +13,9 @@
         <!-- Header -->
         <div class="text-center mb-6 sm:mb-8">
           <h1 class="text-2xl sm:text-3xl font-bold text-gray-800">
-            Welcome Back
+            QrCodeShow
           </h1>
-          <p class="text-gray-500 mt-2 text-sm sm:text-base">
-            Sign in to your account
-          </p>
+          <p class="text-gray-500 mt-2 text-sm sm:text-base">VideoServer</p>
         </div>
 
         <!-- Form -->
@@ -60,14 +58,14 @@
               class="h-11 sm:h-12 rounded-lg font-semibold"
               :loading="isLoading"
             >
-              Sign In
+              Ulgama gir
             </a-button>
           </a-form-item>
         </a-form>
 
         <!-- Footer -->
         <div class="text-center mt-5 sm:mt-6 text-xs sm:text-sm text-gray-500">
-          © {{ new Date().getFullYear() }} Your App
+          © {{ new Date().getFullYear() }} Qrvideo
         </div>
       </a-card>
     </div>

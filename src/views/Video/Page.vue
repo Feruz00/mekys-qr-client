@@ -16,7 +16,6 @@
       <!-- VIDEO -->
       <video
         v-else-if="isVideo"
-        muted
         autoplay
         playsinline
         controls

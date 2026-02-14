@@ -17,9 +17,10 @@
       <template v-if="!isLoading">
         <video
           v-if="isVideo"
-          autoplay
           playsinline
+          webkit-playsinline
           controls
+          preload="auto"
           class="w-full rounded-lg shadow-lg ratio"
           @error="handleStreamError"
         >

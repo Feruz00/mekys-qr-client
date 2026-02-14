@@ -13,19 +13,19 @@
         <p class="opacity-70">Bu faýl pozulan ýa-da elýeterli däl.</p>
       </div>
 
-      <video
-        v-else-if="isVideo"
-        playsinline
-        webkit-playsinline
-        controls
-        preload="auto"
-        class="w-full rounded-lg shadow-lg ratio"
-        @error="handleStreamError"
-      >
-        <source :src="mediaUrl" :type="mimeType" />
-      </video>
+      <!-- <video
+          v-if="isVideo"
+          playsinline
+          webkit-playsinline
+          controls
+          preload="auto"
+          class="w-full rounded-lg shadow-lg ratio"
+          @error="handleStreamError"
+        >
+          <source :src="mediaUrl" :type="mimeType" />
+        </video> -->
 
-      <!-- <VideoPlayer v-if="isVideo" :path="mediaUrl" /> -->
+      <VideoPlayer v-else-if="isVideo" :path="mediaUrl" />
       <audio v-else class="w-full" controls autoplay @error="handleStreamError">
         <source :src="mediaUrl" :type="mimeType" />
       </audio>

@@ -14,22 +14,29 @@
       </div>
 
       <!-- VIDEO -->
-      <VideoPlayer v-if="isVideo" :path="mediaUrl" />
-      <!-- <video
-        v-else-if="isVideo"
-        autoplay
-        playsinline
-        controls
-        class="w-full rounded-lg shadow-lg"
-        @error="handleStreamError"
-      >
-        <source :src="mediaUrl" :type="mimeType" />
-      </video> -->
+      <template v-if="!isLoading">
+        <video
+          v-if="isVideo"
+          autoplay
+          playsinline
+          controls
+          class="w-full rounded-lg shadow-lg ratio"
+          @error="handleStreamError"
+        >
+          <source :src="mediaUrl" :type="mimeType" />
+        </video>
 
-      <!-- AUDIO -->
-      <audio v-else class="w-full" controls autoplay @error="handleStreamError">
-        <source :src="mediaUrl" :type="mimeType" />
-      </audio>
+        <!-- <VideoPlayer v-if="isVideo" :path="mediaUrl" /> -->
+        <audio
+          v-else
+          class="w-full"
+          controls
+          autoplay
+          @error="handleStreamError"
+        >
+          <source :src="mediaUrl" :type="mimeType" />
+        </audio>
+      </template>
     </div>
   </div>
 </template>
@@ -81,3 +88,23 @@ onMounted(async () => {
   }
 });
 </script>
+<style>
+/* Fallback spinner animation */
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+.ratio {
+  max-height: 100%;
+  aspect-ratio: 16 / 9;
+}
+</style>

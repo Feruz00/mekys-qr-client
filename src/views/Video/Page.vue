@@ -1,6 +1,6 @@
 <template>
   <div class="min-h-screen bg-black flex items-center justify-center">
-    <div class="w-full px-4">
+    <div class="w-full max-w-5xl px-4">
       <!-- LOADING -->
       <div v-if="isLoading" class="text-white text-center py-20">
         Media ýüklenýär...

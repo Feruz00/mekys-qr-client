@@ -4,6 +4,7 @@ import adminRouter from '../views/Admin/router';
 import loginRouter from '../views/Login/router';
 import userRoutes from '../views/User/router';
 import videoRoutes from '../views/Video/router';
+import { useSocketStore } from '../store/socket';
 
 const routes = [
   ...adminRouter,
@@ -24,8 +25,13 @@ const router = createRouter({
 
 router.beforeEach(async (to, from, next) => {
   const authStore = useAuthStore();
+  const socketStore = useSocketStore();
   if (!authStore.user && !authStore.isLoading) {
     await authStore.fetchCurrentUser();
+  }
+
+  if (authStore.user?.id && !socketStore.socket?.connected) {
+    socketStore.connect();
   }
 
   if (to.meta?.auth) {

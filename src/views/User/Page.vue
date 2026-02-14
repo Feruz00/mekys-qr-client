@@ -55,6 +55,73 @@
 
             <!-- View count -->
             <a-table-column
+              title="Status"
+              dataIndex="file"
+              width="15rem"
+              align="center"
+            >
+              <template #default="{ record }">
+                <div class="flex flex-col items-center gap-1">
+                  <!-- Status Tag + Icon -->
+                  <a-tooltip placement="top">
+                    <template #title>
+                      <span v-if="record.file?.status === 'processing'">
+                        Optimizing media... {{ record.file?.progress || 0 }}%
+                      </span>
+                      <span v-else-if="record.file?.status === 'ready'">
+                        Ready for playback & QR code
+                      </span>
+                      <span v-else-if="record.file?.status === 'failed'">
+                        Failed – try re-uploading
+                      </span>
+                      <span v-else>Unknown</span>
+                    </template>
+
+                    <a-tag
+                      :color="
+                        record.file?.status === 'processing'
+                          ? 'processing'
+                          : record.file?.status === 'ready'
+                            ? 'success'
+                            : record.file?.status === 'failed'
+                              ? 'error'
+                              : 'default'
+                      "
+                    >
+                      <span class="font-medium">
+                        {{
+                          record.file?.status === 'processing'
+                            ? ` Processing ${record.file?.progress || 0}%`
+                            : record.file?.status === 'ready'
+                              ? ' Ready'
+                              : record.file?.status === 'failed'
+                                ? ' Failed'
+                                : ' Unknown'
+                        }}
+                      </span>
+                    </a-tag>
+                  </a-tooltip>
+
+                  <!-- Horizontal progress line – only when processing -->
+
+                  <a-progress
+                    v-if="record.file?.status === 'processing'"
+                    :percent="record.file?.progress || 0"
+                    :show-info="false"
+                    size="small"
+                    status="active"
+                    :strokeColor="{
+                      '0%': '#108ee9',
+                      '100%': '#87d068',
+                    }"
+                    class="flex-1"
+                  />
+
+                  <!-- Percentage on the right -->
+                </div>
+              </template>
+            </a-table-column>
+            <a-table-column
               title="Görlen sany"
               dataIndex="count"
               width="160"
@@ -118,18 +185,21 @@
 </template>
 
 <script setup>
-import { computed, onMounted, ref } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useWindowSize } from '@vueuse/core';
 import PageHeader from '../../components/PageHeader.vue';
 import Error from '../../components/Error.vue';
 import { useDeleteQr, useDeleteQrs, useGetQrs } from './useQrs';
 import { QrcodeOutlined } from '@ant-design/icons-vue';
+import { useSocketStore } from '../../store/socket';
+import { useQueryClient } from '@tanstack/vue-query';
 
+const queryClient = useQueryClient();
 /* responsive */
 const { width } = useWindowSize();
 const isMobile = computed(() => width.value < 768);
-
+const socketStore = useSocketStore();
 /* router */
 const route = useRoute();
 const router = useRouter();
@@ -199,6 +269,56 @@ const deleteRowSelections = () => {
     onSuccess: () => (selectedRows.value = []),
   });
 };
+
+watch(
+  () => socketStore.socket,
+  (socket) => {
+    if (!socket) return;
+
+    // Listen for progress → update cache
+    socket.on('progress', ({ fileId, percent }) => {
+      queryClient.setQueryData(['qrs', queryKeys.value], (oldData) => {
+        if (!oldData?.data) return oldData;
+
+        const newData = oldData.data.map((item) =>
+          item.file?.id === fileId
+            ? { ...item, file: { ...item.file, progress: percent } }
+            : item
+        );
+
+        return { ...oldData, data: newData };
+      });
+    });
+
+    // Listen for done → update status
+    socket.on('processing-done', ({ fileId, status }) => {
+      queryClient.setQueryData(['qrs', queryKeys.value], (oldData) => {
+        if (!oldData?.data) return oldData;
+
+        const newData = oldData.data.map((item) =>
+          item.file?.id === fileId
+            ? { ...item, file: { ...item.file, status } }
+            : item
+        );
+
+        return { ...oldData, data: newData };
+      });
+
+      if (status === 'ready') {
+        notification.success({
+          message: 'Success',
+          description: 'Media processing completed!',
+        });
+      } else if (status === 'failed') {
+        notification.error({
+          message: 'Error',
+          description: 'Media processing failed. Please try again.',
+        });
+      }
+    });
+  },
+  { immediate: true }
+);
 
 onMounted(() => {
   document.title = 'Admin tarap | Medialar';

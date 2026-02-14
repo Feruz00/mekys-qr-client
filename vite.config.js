@@ -23,4 +23,17 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
+  build: {
+    cssCodeSplit: false, // Merge all CSS into one file (reduces requests)
+    minify: 'esbuild', // or 'terser'
+    sourcemap: false, // disable in prod
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          // Group heavy deps
+          vendor: ['vue', 'vue-router', 'axios' /* add others */],
+        },
+      },
+    },
+  },
 });

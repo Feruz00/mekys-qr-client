@@ -1,6 +1,6 @@
 <template>
   <div class="min-h-screen bg-black flex items-center justify-center">
-    <div class="w-full max-w-5xl px-4">
+    <div class="w-full px-4">
       <!-- LOADING -->
       <div v-if="isLoading" class="text-white text-center py-20">
         Media ýüklenýär...
@@ -14,7 +14,8 @@
       </div>
 
       <!-- VIDEO -->
-      <video
+      <VideoPlayer v-if="isVideo" :path="mediaUrl" />
+      <!-- <video
         v-else-if="isVideo"
         autoplay
         playsinline
@@ -23,7 +24,7 @@
         @error="handleStreamError"
       >
         <source :src="mediaUrl" :type="mimeType" />
-      </video>
+      </video> -->
 
       <!-- AUDIO -->
       <audio v-else class="w-full" controls autoplay @error="handleStreamError">
@@ -37,6 +38,8 @@
 import { computed, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import axios from 'axios';
+import VideoPlayer from '../../components/VideoPlayer.vue';
+import { getStreamUrl } from '../../utils/links';
 
 const route = useRoute();
 
@@ -44,6 +47,7 @@ const isLoading = ref(true);
 const isError = ref(false);
 const mimeType = ref('');
 
+const path = ref('');
 const mediaId = computed(() => route.params.id);
 
 const mediaUrl = computed(() => {
@@ -64,6 +68,7 @@ onMounted(async () => {
 
     const file = data.data?.file;
 
+    path.value = file.path;
     mimeType.value = file.mimetype;
     document.title = isVideo.value ? 'Video' : 'Audio';
   } catch (err) {

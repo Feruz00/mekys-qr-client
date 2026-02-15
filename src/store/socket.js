@@ -14,7 +14,9 @@ export const useSocketStore = defineStore('socket', () => {
     if (!authStore.user?.id) return;
     socket.value = io(import.meta.env.VITE_API_URL, {
       query: { id: authStore.user.id },
+      withCredentials: true,
       transports: ['polling', 'websocket'],
+      autoConnect: false,
     });
 
     socket.value.on('connect', () => {
@@ -23,33 +25,6 @@ export const useSocketStore = defineStore('socket', () => {
       console.log('✅ Socket connected');
     });
 
-    // socket.value.onAny((event, ...args) => {
-    //   console.log('[socket-event]', event, args);
-    // });
-
-    // socket.value
-    //   .off('processing-started')
-    //   .on('processing-started', ({ fileId, userId }) => {
-    //     // console.log('processing-started', data);
-    //   });
-
-    // socket.value
-    //   .off('progress')
-    //   .on('progress', ({ fileId, percent, timemark, message, userId }) => {
-    //     // console.log('progress', data);
-    //   });
-    // socket.value
-    //   .off('processing-done')
-    //   .on('processing-done', ({ fileId, message, userId, status }) => {
-    //     if (status === 'failed') {
-    //       notification.error({ message: '', description: err });
-    //     } else {
-    //       notification.success({
-    //         message: '',
-    //         description: '',
-    //       });
-    //     }
-    //   });
     socket.value.on('connect_error', (err) => {
       console.error('❌ Socket connect error:', err.message);
     });

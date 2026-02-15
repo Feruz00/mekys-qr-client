@@ -19,7 +19,7 @@
         controls
         playsinline
         preload="metadata"
-        class="object-fit"
+        class="w-full"
       >
         <source :src="mediaUrl" :type="mimeType" />
       </video>

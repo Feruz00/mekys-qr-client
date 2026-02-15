@@ -13,7 +13,16 @@
         <p class="opacity-70">Bu faýl pozulan ýa-da elýeterli däl.</p>
       </div>
 
-      <VideoPlayer v-else-if="isVideo" :path="mediaUrl" />
+      <!-- <VideoPlayer v-else-if="isVideo" :path="mediaUrl" /> -->
+      <video
+        v-else-if="isVideo"
+        controls
+        playsinline
+        preload="metadata"
+        class="object-fit"
+      >
+        <source :src="mediaUrl" :type="mimeType" />
+      </video>
       <audio v-else class="w-full" controls autoplay @error="handleStreamError">
         <source :src="mediaUrl" :type="mimeType" />
       </audio>

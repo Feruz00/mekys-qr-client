@@ -12,6 +12,7 @@ export const useSocketStore = defineStore('socket', () => {
 
   const connect = () => {
     if (!authStore.user?.id) return;
+    console.log(import.meta.env.VITE_API_URL);
     socket.value = io(import.meta.env.VITE_API_URL, {
       query: { id: authStore.user.id },
       transports: ['polling', 'websocket'],
